@@ -1,0 +1,60 @@
+﻿@inject NI.Helpers.Blazor.Modal.IModalService ModalService
+
+@*<h3>NikEventForm</h3>*@
+
+@if (ShowForm)
+{
+    <div class="simple-form">
+        <div class="form-group">
+            <label for="caption">Caption</label>
+            <input @bind="Caption" type="text" class="form-control" id="caption" placeholder="Enter Caption" />
+        </div>
+
+        <div class="form-group">
+            <label for="date">Date</label>
+            <DevExpress.Blazor.DxDateEdit @bind-Date="Date" />
+            @*<input @bind="Caption" type="text" class="form-control" id="caption" placeholder="Enter Caption" />*@
+        </div>
+
+        <button onclick="SubmitForm" class="btn btn-primary">Submit</button>
+        <button onclick="Cancel" class="btn btn-secondary">Cancel</button>
+    </div>
+}
+else
+{
+    <div class="alert alert-success" role="alert">
+        Some text
+    </div>
+}
+
+@code {
+    [CascadingParameter] ModalParameters Parameters {get; set;}
+    [CascadingParameter] BlazoredModal BlazoredModal {get; set;}
+
+    bool ShowForm {get;set;} = true;
+    string Caption {get; set;} ="";
+    DateTime Date {get;set;} = DateTime.Now;
+    int FormId {get; set;}
+
+    protected override void OnInitialized()
+    {
+        FormId = Parameters.Get<int>("FormId");
+        BlazoredModal.SetTitle("Add/Edit event");
+    }
+
+    void SubmitForm()
+    {
+        ShowForm = true;
+    }
+
+    void Done()
+    {
+        ModalService.Close(ModalResult.Ok("Form Submitted"));
+    }
+
+    void Cancel()
+    {
+        ModalService.Close(ModalResult.Cancel());
+    }
+
+}

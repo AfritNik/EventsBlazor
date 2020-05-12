@@ -1,0 +1,69 @@
+﻿@page "/NikEvents"
+@inject HttpClient Http
+@inject IModalService Modal
+
+<h3>NikEventsList</h3>
+
+@if (events == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var nikEvent in events)
+            {
+                <tr>
+                    <td>@nikEvent.Caption</td>
+                    <td>@nikEvent.Date.ToShortDateString()</td>
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button @onclick="ShowModal" class="btn btn-primary">Show Modal</button>
+}
+
+@code
+{
+    private List<NikEvent> events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //events = new List<NikEvent>()
+        //{
+        //new NikEvent()
+        //{
+        //Caption = "First event"
+        //},
+        //new NikEvent()
+        //{
+        //Caption = "Second event"
+        //}
+        //};
+        events = await Http.GetFromJsonAsync<List<NikEvent>>("NikEvent");
+    }
+
+    void ShowModal()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("FormId", 3);
+
+        Modal.OnClose += ModalClosed;
+        Modal.Show<NikEventForm>("Event form", parameters);
+    }
+
+    void ModalClosed(ModalResult modalResult)
+    {
+        Modal.OnClose -= ModalClosed;
+    }
+}
