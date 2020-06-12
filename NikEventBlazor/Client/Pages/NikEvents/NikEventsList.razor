@@ -1,6 +1,7 @@
 ﻿@page "/NikEvents"
 @inject HttpClient Http
 @inject IModalService Modal
+@using NikEventBlazor.Shared
 
 <h3>NikEventsList</h3>
 
@@ -25,7 +26,7 @@ else
                 <tr>
                     <td>@nikEvent.Caption</td>
                     <td>@nikEvent.Date.ToShortDateString()</td>
-                    
+
                 </tr>
             }
         </tbody>
@@ -36,6 +37,8 @@ else
 @code
 {
     private List<NikEvent> events;
+    //private WeatherForecast[] forecasts;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -50,6 +53,9 @@ else
         //Caption = "Second event"
         //}
         //};
+        //forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        //string result = await Http.GetStringAsync("NikEvent");
+        //Console.WriteLine(result);
         events = await Http.GetFromJsonAsync<List<NikEvent>>("NikEvent");
     }
 

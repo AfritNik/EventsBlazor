@@ -12,17 +12,25 @@ namespace NikEventBlazor.Server.Controllers
     [Route("[controller]")]
     public class NikEventController : ControllerBase
     {
+        private readonly ApplicationDbContext m_context;
+        private readonly ILogger<NikEventController> m_logger;
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<NikEventController> logger;
 
-        public NikEventController(ILogger<NikEventController> logger)
+
+        public NikEventController(ApplicationDbContext context, ILogger<NikEventController> logger)
         {
-            this.logger = logger;
+            m_context = context;
+            m_logger = logger;
         }
+
+        //public NikEventController(ILogger<NikEventController> logger)
+        //{
+        //    m_logger = logger;
+        //}
 
         [HttpGet]
         public IEnumerable<NikEvent> Get()
@@ -38,6 +46,14 @@ namespace NikEventBlazor.Server.Controllers
                     Caption = "Second event"
                 }
             };
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<int>> Post(NikEvent nikEvent)
+        {
+            m_context.Add(nikEvent);
+            await m_context.SaveChangesAsync();
+            return nikEvent.Id;
         }
     }
 }
